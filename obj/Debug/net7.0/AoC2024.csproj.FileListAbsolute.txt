@@ -1,0 +1,15 @@
+/Users/lumpator/AoC2024/AoC2024/bin/Debug/net7.0/AoC2024
+/Users/lumpator/AoC2024/AoC2024/bin/Debug/net7.0/AoC2024.deps.json
+/Users/lumpator/AoC2024/AoC2024/bin/Debug/net7.0/AoC2024.runtimeconfig.json
+/Users/lumpator/AoC2024/AoC2024/bin/Debug/net7.0/AoC2024.dll
+/Users/lumpator/AoC2024/AoC2024/bin/Debug/net7.0/AoC2024.pdb
+/Users/lumpator/AoC2024/AoC2024/obj/Debug/net7.0/AoC2024.csproj.AssemblyReference.cache
+/Users/lumpator/AoC2024/AoC2024/obj/Debug/net7.0/AoC2024.GeneratedMSBuildEditorConfig.editorconfig
+/Users/lumpator/AoC2024/AoC2024/obj/Debug/net7.0/AoC2024.AssemblyInfoInputs.cache
+/Users/lumpator/AoC2024/AoC2024/obj/Debug/net7.0/AoC2024.AssemblyInfo.cs
+/Users/lumpator/AoC2024/AoC2024/obj/Debug/net7.0/AoC2024.csproj.CoreCompileInputs.cache
+/Users/lumpator/AoC2024/AoC2024/obj/Debug/net7.0/AoC2024.dll
+/Users/lumpator/AoC2024/AoC2024/obj/Debug/net7.0/refint/AoC2024.dll
+/Users/lumpator/AoC2024/AoC2024/obj/Debug/net7.0/AoC2024.pdb
+/Users/lumpator/AoC2024/AoC2024/obj/Debug/net7.0/AoC2024.genruntimeconfig.cache
+/Users/lumpator/AoC2024/AoC2024/obj/Debug/net7.0/ref/AoC2024.dll
