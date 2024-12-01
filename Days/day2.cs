@@ -2,12 +2,12 @@ using AoC2024.Interfaces;
 
 namespace AoC2024.Days;
 
-public class Day : IDay
+public class Day2 : IDay
 {
     private readonly string[] _lines;
-    public Day()
+    public Day2()
     {
-        _lines = Utils.Utilities.ReadLinesFromInputFIle("Inputs/inputDay1.txt");
+        _lines = Utils.Utilities.ReadLinesFromInputFIle("Inputs/inputDay2.txt");
     }
 
     public void SolvePart1()
