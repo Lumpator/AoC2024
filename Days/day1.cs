@@ -10,7 +10,7 @@ public class Day1 : IDay
 
     public Day1()
     {
-        _lines = Utils.Utilities.ReadLinesFromInputFIle("Inputs/inputDay1.txt");
+        _lines = File.ReadAllLines("Inputs/inputDay1.txt");
         _leftValues = new List<int>();
         _rightValues = new List<int>();
         ParseInput();

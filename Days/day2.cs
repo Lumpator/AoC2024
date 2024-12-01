@@ -7,7 +7,7 @@ public class Day2 : IDay
     private readonly string[] _lines;
     public Day2()
     {
-        _lines = Utils.Utilities.ReadLinesFromInputFIle("Inputs/inputDay2.txt");
+        _lines = File.ReadAllLines("Inputs/inputDay2.txt");
     }
 
     public void SolvePart1()
