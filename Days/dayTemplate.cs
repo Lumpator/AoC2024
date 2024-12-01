@@ -6,11 +6,13 @@ public class Day : IDay
 {
     public void SolvePart1()
     {
-        Console.WriteLine("Day 1 Part 1 solution is: ... ");
+        int Part1Result = 0;
+        Console.WriteLine($"Part 1 solution is: {Part1Result}");
     }
 
     public void SolvePart2()
     {
-        Console.WriteLine("Day 1 Part2 solution is: ... ");
+        int Part2Result = 0;
+        Console.WriteLine($"Part 2 solution is: {Part2Result} ");
     }
 }
