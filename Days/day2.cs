@@ -40,6 +40,7 @@ public class Day2 : IDay
         {
             bool isSorted = IsSortedAscOrDesc(line);
             bool isWithinLimits = ValuesDifferenceInRange(line);
+
             if (isSorted)
             {
                 if (isWithinLimits)
@@ -49,11 +50,8 @@ public class Day2 : IDay
                 else
                 // if its already sorted without duplicate elements, only way to make line valid is to remove first or last element 
                 {
-                    int[] newLineWithoutLastElement = new int[line.Length - 1];
-                    Array.Copy(line, 0, newLineWithoutLastElement, 0, line.Length - 1);
-
-                    int[] newLineWithoutFirstElemenet = new int[line.Length - 1];
-                    Array.Copy(line, 1, newLineWithoutFirstElemenet, 0, line.Length - 1);
+                    int[] newLineWithoutLastElement = RemoveAtIndex(line, line.Length - 1);
+                    int[] newLineWithoutFirstElemenet = RemoveAtIndex(line, 0);
 
                     if (ValuesDifferenceInRange(newLineWithoutFirstElemenet) || ValuesDifferenceInRange(newLineWithoutLastElement))
                     {
@@ -67,7 +65,7 @@ public class Day2 : IDay
             {
                 for (int i = 0; i < line.Length; i++)
                 {
-                    var newLine = RemoveAt(line, i);
+                    var newLine = RemoveAtIndex(line, i);
                     bool isSortedNew = IsSortedAscOrDesc(newLine);
                     bool isWithinLimitsNew = ValuesDifferenceInRange(newLine);
                     if (isSortedNew & isWithinLimitsNew)
@@ -75,7 +73,6 @@ public class Day2 : IDay
                         part2Result++;
                         break;
                     }
-
                 }
             }
         }
@@ -118,7 +115,7 @@ public class Day2 : IDay
         return true;
     }
 
-    int[] RemoveAt(int[] array, int indexToRemove)
+    int[] RemoveAtIndex(int[] array, int indexToRemove)
     {
         if (indexToRemove < 0 || indexToRemove >= array.Length)
         {
@@ -136,10 +133,4 @@ public class Day2 : IDay
 
         return newArray;
     }
-
-
-
-
-
-
 }
