@@ -114,80 +114,46 @@ public class Day4 : IDay
         part2Result += FindXMAS(_grid);
 
         Console.WriteLine($"Part 2 solution is: {part2Result} ");
-    }
 
-    private static int CheckFromTopToBot(char[][] grid, int i, int j)
-    {
-        int matchCount = 0;
-        if (grid[i][j] == 'M' && grid[i][j + 2] == 'S')
+
+        static int CheckPattern(char[][] grid, int i, int j, char[] topPattern, char[] botPattern)
         {
-            // Check the middle "A" in row `i + 1`
-            if (grid[i + 1][j + 1] == 'A')
+            int matchCount = 0;
+            if (grid[i][j] == topPattern[0] && grid[i][j + 2] == topPattern[1])
             {
-                // Check the second "M.S" in row `i + 2`
-                if (grid[i + 2][j] == 'M' && grid[i + 2][j + 2] == 'S')
+                // Check the middle "A" in row `i + 1`
+                if (grid[i + 1][j + 1] == 'A')
                 {
-                    matchCount++;
+                    // Check the second pattern in row `i + 2`
+                    if (grid[i + 2][j] == botPattern[0] && grid[i + 2][j + 2] == botPattern[1])
+                    {
+                        matchCount++;
+                    }
                 }
             }
+            return matchCount;
         }
 
-        return matchCount;
-    }
-    private static int CheckFromBotToTop(char[][] grid, int i, int j)
-    {
-        int matchCount = 0;
-        if (grid[i][j] == 'S' && grid[i][j + 2] == 'M')
+        static int CheckFromTopToBot(char[][] grid, int i, int j)
         {
-            // Check the middle "A" in row `i + 1`
-            if (grid[i + 1][j + 1] == 'A')
-            {
-                // Check the second "S.M" in row `i + 2`
-                if (grid[i + 2][j] == 'S' && grid[i + 2][j + 2] == 'M')
-                {
-                    matchCount++;
-                }
-            }
+            return CheckPattern(grid, i, j, new char[] { 'M', 'S' }, new char[] { 'M', 'S' });
         }
 
-        return matchCount;
-    }
-
-    private static int CheckFromLeftToRight(char[][] grid, int i, int j)
-    {
-        int matchCount = 0;
-        if (grid[i][j] == 'S' && grid[i][j + 2] == 'S')
+        static int CheckFromBotToTop(char[][] grid, int i, int j)
         {
-            // Check the middle "A" in row `i + 1`
-            if (grid[i + 1][j + 1] == 'A')
-            {
-                // Check the second "M.M" in row `i + 2`
-                if (grid[i + 2][j] == 'M' && grid[i + 2][j + 2] == 'M')
-                {
-                    matchCount++;
-                }
-            }
+            return CheckPattern(grid, i, j, new char[] { 'S', 'M' }, new char[] { 'S', 'M' });
         }
 
-        return matchCount;
-    }
-
-    private static int CheckFromRightToLeft(char[][] grid, int i, int j)
-    {
-        int matchCount = 0;
-        if (grid[i][j] == 'M' && grid[i][j + 2] == 'M')
+        static int CheckFromLeftToRight(char[][] grid, int i, int j)
         {
-            // Check the middle "A" in row `i + 1`
-            if (grid[i + 1][j + 1] == 'A')
-            {
-                // Check the second "S.S" in row `i + 2`
-                if (grid[i + 2][j] == 'S' && grid[i + 2][j + 2] == 'S')
-                {
-                    matchCount++;
-                }
-            }
+            return CheckPattern(grid, i, j, new char[] { 'S', 'S' }, new char[] { 'M', 'M' });
         }
 
-        return matchCount;
+        static int CheckFromRightToLeft(char[][] grid, int i, int j)
+        {
+            return CheckPattern(grid, i, j, new char[] { 'M', 'M' }, new char[] { 'S', 'S' });
+        }
     }
+
+
 }
