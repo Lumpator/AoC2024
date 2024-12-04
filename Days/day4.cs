@@ -8,7 +8,7 @@ public class Day4 : IDay
     private readonly char[][] _grid;
     public Day4()
     {
-        _lines = File.ReadAllLines("Inputs/inputDay4.txt");
+        _lines = File.ReadAllLines("Inputs/test.txt");
         // Create the char[][] from the lines
         _grid = new char[_lines.Length][];
         for (int i = 0; i < _lines.Length; i++)
@@ -91,6 +91,39 @@ public class Day4 : IDay
     public void SolvePart2()
     {
         int part2Result = 0;
+
+        static int FindPattern(char[][] grid)
+        {
+            int matchCount = 0;
+
+            int rows = grid.Length;
+            int cols = grid[0].Length;
+
+            // Iterate through the grid to find potential starting points for the pattern
+            for (int i = 0; i < rows - 2; i++) // Stop 2 rows before the end
+            {
+                for (int j = 0; j < cols - 2; j++) // Ensure valid range for M.S horizontally
+                {
+                    // Check the first "M.S" in row `i`
+                    if (grid[i][j] == 'M' && grid[i][j + 2] == 'S')
+                    {
+                        // Check the middle "A" in row `i + 1`
+                        if (grid[i + 1][j + 1] == 'A')
+                        {
+                            // Check the second "M.S" in row `i + 2`
+                            if (grid[i + 2][j] == 'M' && grid[i + 2][j + 2] == 'S')
+                            {
+                                matchCount++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return matchCount;
+        }
+        part2Result += FindPattern(_grid);
+
         Console.WriteLine($"Part 2 solution is: {part2Result} ");
     }
 
