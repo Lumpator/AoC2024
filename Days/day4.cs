@@ -89,7 +89,7 @@ public class Day4 : IDay
     {
         int part2Result = 0;
 
-        static int FindPattern(char[][] grid)
+        static int FindXMAS(char[][] grid)
         {
             int matchCount = 0;
 
@@ -101,7 +101,7 @@ public class Day4 : IDay
             {
                 for (int j = 0; j < cols - 2; j++) // Ensure valid range for M.S horizontally
                 {
-                    // Check the first "M.S" in row `i`
+                    // Check the first "M.S", "S.M", "M.M", "S.S"  in row `i`
                     matchCount += CheckFromTopToBot(grid, i, j);
                     matchCount += CheckFromBotToTop(grid, i, j);
                     matchCount += CheckFromLeftToRight(grid, i, j);
@@ -111,7 +111,7 @@ public class Day4 : IDay
 
             return matchCount;
         }
-        part2Result += FindPattern(_grid);
+        part2Result += FindXMAS(_grid);
 
         Console.WriteLine($"Part 2 solution is: {part2Result} ");
     }
@@ -142,7 +142,7 @@ public class Day4 : IDay
             // Check the middle "A" in row `i + 1`
             if (grid[i + 1][j + 1] == 'A')
             {
-                // Check the second "M.S" in row `i + 2`
+                // Check the second "S.M" in row `i + 2`
                 if (grid[i + 2][j] == 'S' && grid[i + 2][j + 2] == 'M')
                 {
                     matchCount++;
@@ -161,7 +161,7 @@ public class Day4 : IDay
             // Check the middle "A" in row `i + 1`
             if (grid[i + 1][j + 1] == 'A')
             {
-                // Check the second "M.S" in row `i + 2`
+                // Check the second "M.M" in row `i + 2`
                 if (grid[i + 2][j] == 'M' && grid[i + 2][j + 2] == 'M')
                 {
                     matchCount++;
@@ -180,7 +180,7 @@ public class Day4 : IDay
             // Check the middle "A" in row `i + 1`
             if (grid[i + 1][j + 1] == 'A')
             {
-                // Check the second "M.S" in row `i + 2`
+                // Check the second "S.S" in row `i + 2`
                 if (grid[i + 2][j] == 'S' && grid[i + 2][j + 2] == 'S')
                 {
                     matchCount++;
