@@ -8,7 +8,7 @@ public class Day4 : IDay
     private readonly char[][] _grid;
     public Day4()
     {
-        _lines = File.ReadAllLines("Inputs/test.txt");
+        _lines = File.ReadAllLines("Inputs/inputDay4.txt");
         // Create the char[][] from the lines
         _grid = new char[_lines.Length][];
         for (int i = 0; i < _lines.Length; i++)
@@ -20,7 +20,7 @@ public class Day4 : IDay
     public void SolvePart1()
     {
         int part1Result = 0;
-        static List<(int, int, string)> FindXMAS(char[][] grid)
+        static List<(int, int)> FindXMAS(char[][] grid)
         {
             // Define all 8 possible directions
             int[][] directions = new int[][]
@@ -35,9 +35,7 @@ public class Day4 : IDay
             new int[] { 1, 1 }    // Down-Right
             };
 
-            string[] directionNames = { "Up", "Down", "Left", "Right", "Up-Left", "Up-Right", "Down-Left", "Down-Right" };
-
-            List<(int, int, string)> results = new List<(int, int, string)>();
+            List<(int, int)> results = new List<(int, int)>();
 
             int rows = grid.Length;
             int cols = grid[0].Length;
@@ -73,7 +71,7 @@ public class Day4 : IDay
                             // If the word is found, add it to the results
                             if (found)
                             {
-                                results.Add((i, j, directionNames[d]));
+                                results.Add((i, j));
                             }
                         }
                     }
@@ -82,8 +80,7 @@ public class Day4 : IDay
             return results;
         }
 
-        var results = FindXMAS(_grid);
-        part1Result += results.Count();
+        part1Result += FindXMAS(_grid).Count();
 
         Console.WriteLine($"Part 1 solution is: {part1Result}");
     }
@@ -105,18 +102,10 @@ public class Day4 : IDay
                 for (int j = 0; j < cols - 2; j++) // Ensure valid range for M.S horizontally
                 {
                     // Check the first "M.S" in row `i`
-                    if (grid[i][j] == 'M' && grid[i][j + 2] == 'S')
-                    {
-                        // Check the middle "A" in row `i + 1`
-                        if (grid[i + 1][j + 1] == 'A')
-                        {
-                            // Check the second "M.S" in row `i + 2`
-                            if (grid[i + 2][j] == 'M' && grid[i + 2][j + 2] == 'S')
-                            {
-                                matchCount++;
-                            }
-                        }
-                    }
+                    matchCount += CheckFromTopToBot(grid, i, j);
+                    matchCount += CheckFromBotToTop(grid, i, j);
+                    matchCount += CheckFromLeftToRight(grid, i, j);
+                    matchCount += CheckFromRightToLeft(grid, i, j);
                 }
             }
 
@@ -127,4 +116,78 @@ public class Day4 : IDay
         Console.WriteLine($"Part 2 solution is: {part2Result} ");
     }
 
+    private static int CheckFromTopToBot(char[][] grid, int i, int j)
+    {
+        int matchCount = 0;
+        if (grid[i][j] == 'M' && grid[i][j + 2] == 'S')
+        {
+            // Check the middle "A" in row `i + 1`
+            if (grid[i + 1][j + 1] == 'A')
+            {
+                // Check the second "M.S" in row `i + 2`
+                if (grid[i + 2][j] == 'M' && grid[i + 2][j + 2] == 'S')
+                {
+                    matchCount++;
+                }
+            }
+        }
+
+        return matchCount;
+    }
+    private static int CheckFromBotToTop(char[][] grid, int i, int j)
+    {
+        int matchCount = 0;
+        if (grid[i][j] == 'S' && grid[i][j + 2] == 'M')
+        {
+            // Check the middle "A" in row `i + 1`
+            if (grid[i + 1][j + 1] == 'A')
+            {
+                // Check the second "M.S" in row `i + 2`
+                if (grid[i + 2][j] == 'S' && grid[i + 2][j + 2] == 'M')
+                {
+                    matchCount++;
+                }
+            }
+        }
+
+        return matchCount;
+    }
+
+    private static int CheckFromLeftToRight(char[][] grid, int i, int j)
+    {
+        int matchCount = 0;
+        if (grid[i][j] == 'S' && grid[i][j + 2] == 'S')
+        {
+            // Check the middle "A" in row `i + 1`
+            if (grid[i + 1][j + 1] == 'A')
+            {
+                // Check the second "M.S" in row `i + 2`
+                if (grid[i + 2][j] == 'M' && grid[i + 2][j + 2] == 'M')
+                {
+                    matchCount++;
+                }
+            }
+        }
+
+        return matchCount;
+    }
+
+    private static int CheckFromRightToLeft(char[][] grid, int i, int j)
+    {
+        int matchCount = 0;
+        if (grid[i][j] == 'M' && grid[i][j + 2] == 'M')
+        {
+            // Check the middle "A" in row `i + 1`
+            if (grid[i + 1][j + 1] == 'A')
+            {
+                // Check the second "M.S" in row `i + 2`
+                if (grid[i + 2][j] == 'S' && grid[i + 2][j + 2] == 'S')
+                {
+                    matchCount++;
+                }
+            }
+        }
+
+        return matchCount;
+    }
 }
