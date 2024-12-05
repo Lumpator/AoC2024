@@ -6,17 +6,11 @@ public class Day5 : IDay
 {
     private readonly string[] _lines;
     private readonly List<Rule> _rules;
+    int i = 0;
     public Day5()
     {
         _lines = File.ReadAllLines("Inputs/inputDay5.txt");
         _rules = new List<Rule>();
-    }
-
-    public void SolvePart1()
-    {
-        int part1Result = 0;
-        int i = 0;
-
         // Read the rules
         while (i < _lines.Length && !string.IsNullOrWhiteSpace(_lines[i]))
         {
@@ -31,40 +25,20 @@ public class Day5 : IDay
             i++;
         }
         i++; // Skip the empty line
+    }
+
+    public void SolvePart1()
+    {
+        int part1Result = 0;
+        int currentIndex = i;
 
         // Read the tickets
-        for (; i < _lines.Length; i++)
+        for (; currentIndex < _lines.Length; currentIndex++)
         {
-            var line = _lines[i];
+            var line = _lines[currentIndex];
             if (CheckIfLineIsValidAndReturnMiddleValue(line) != -1)
             {
                 part1Result += CheckIfLineIsValidAndReturnMiddleValue(line);
-            }
-        }
-
-
-        void AddOrUpdateRule(int number, int relatedNumber, bool IsHigherIndex)
-        {
-            var rule = _rules.FirstOrDefault(r => r.Number == number);
-            if (rule == null)
-            {
-                rule = new Rule { Number = number };
-                _rules.Add(rule);
-            }
-
-            if (IsHigherIndex)
-            {
-                if (!rule.HigherIndexNumbers.Contains(relatedNumber))
-                {
-                    rule.HigherIndexNumbers.Add(relatedNumber);
-                }
-            }
-            else
-            {
-                if (!rule.LowerIndexNumbers.Contains(relatedNumber))
-                {
-                    rule.LowerIndexNumbers.Add(relatedNumber);
-                }
             }
         }
 
@@ -100,10 +74,98 @@ public class Day5 : IDay
 
     }
 
+
     public void SolvePart2()
     {
         int part2Result = 0;
+        int currentIndex = i;
+
+        int SortAndReturnMiddleValue(string line)
+        {
+            int[] numbers = line.Split(',').Select(int.Parse).ToArray();
+
+            // Function to check if the array is valid
+            bool IsLineValid(int[] arr)
+            {
+                for (int i = 1; i < arr.Length - 1; i++)
+                {
+                    if (!_rules.Any(r => r.Number == arr[i] &&
+                                         r.LowerIndexNumbers.Contains(arr[i - 1]) &&
+                                         r.HigherIndexNumbers.Contains(arr[i + 1])))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            // Bubble sort-like approach to fix the line
+            bool swapped;
+            do
+            {
+                swapped = false;
+                for (int i = 0; i < numbers.Length - 1; i++)
+                {
+                    int current = numbers[i];
+                    int next = numbers[i + 1];
+
+                    var currentRule = _rules.FirstOrDefault(r => r.Number == current);
+                    var nextRule = _rules.FirstOrDefault(r => r.Number == next);
+
+                    // Check if swapping is needed
+                    if (currentRule != null && nextRule != null &&
+                        (currentRule.HigherIndexNumbers.Contains(next) || nextRule.LowerIndexNumbers.Contains(current)))
+                    {
+                        // Swap the numbers
+                        numbers[i] = next;
+                        numbers[i + 1] = current;
+                        swapped = true;
+                    }
+                }
+            } while (swapped && !IsLineValid(numbers)); // Repeat until valid or no swaps
+
+            /*             // Debugging Output
+                        Console.WriteLine("Input Line: " + line);
+                        Console.WriteLine("Sorted Line: " + string.Join(",", numbers));
+                        Console.WriteLine("Middle Value: " + numbers[numbers.Length / 2]); */
+
+            return numbers[numbers.Length / 2];
+        }
+
+        for (; currentIndex < _lines.Length; currentIndex++)
+        {
+            var line = _lines[currentIndex];
+            if (CheckIfLineIsValidAndReturnMiddleValue(line) == -1)
+            {
+                part2Result += SortAndReturnMiddleValue(line);
+            }
+        }
+
         Console.WriteLine($"Part 2 solution is: {part2Result} ");
+    }
+    void AddOrUpdateRule(int number, int relatedNumber, bool IsHigherIndex)
+    {
+        var rule = _rules.FirstOrDefault(r => r.Number == number);
+        if (rule == null)
+        {
+            rule = new Rule { Number = number };
+            _rules.Add(rule);
+        }
+
+        if (IsHigherIndex)
+        {
+            if (!rule.HigherIndexNumbers.Contains(relatedNumber))
+            {
+                rule.HigherIndexNumbers.Add(relatedNumber);
+            }
+        }
+        else
+        {
+            if (!rule.LowerIndexNumbers.Contains(relatedNumber))
+            {
+                rule.LowerIndexNumbers.Add(relatedNumber);
+            }
+        }
     }
 
 
