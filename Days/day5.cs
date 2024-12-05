@@ -9,7 +9,7 @@ public class Day5 : IDay
     int i = 0;
     public Day5()
     {
-        _lines = File.ReadAllLines("Inputs/inputDay5.txt");
+        _lines = File.ReadAllLines("Inputs/test.txt");
         _rules = new List<Rule>();
         // Read the rules
         while (i < _lines.Length && !string.IsNullOrWhiteSpace(_lines[i]))
@@ -87,13 +87,21 @@ public class Day5 : IDay
             // Function to check if the array is valid
             bool IsLineValid(int[] arr)
             {
-                for (int i = 1; i < arr.Length - 1; i++)
+                for (int i = 0; i < arr.Length; i++)
                 {
-                    if (!_rules.Any(r => r.Number == arr[i] &&
-                                         r.LowerIndexNumbers.Contains(arr[i - 1]) &&
-                                         r.HigherIndexNumbers.Contains(arr[i + 1])))
+                    var rule = _rules.FirstOrDefault(r => r.Number == arr[i]);
+                    if (rule != null)
                     {
-                        return false;
+                        // Check LowerIndexNumbers
+                        if (i > 0 && !rule.LowerIndexNumbers.Contains(arr[i - 1]) && rule.LowerIndexNumbers.Any())
+                        {
+                            return false;
+                        }
+                        // Check HigherIndexNumbers
+                        if (i < arr.Length - 1 && !rule.HigherIndexNumbers.Contains(arr[i + 1]) && rule.HigherIndexNumbers.Any())
+                        {
+                            return false;
+                        }
                     }
                 }
                 return true;
@@ -113,8 +121,8 @@ public class Day5 : IDay
                     var nextRule = _rules.FirstOrDefault(r => r.Number == next);
 
                     // Check if swapping is needed
-                    if (currentRule != null && nextRule != null &&
-                        (currentRule.HigherIndexNumbers.Contains(next) || nextRule.LowerIndexNumbers.Contains(current)))
+                    if ((currentRule != null && currentRule.LowerIndexNumbers.Contains(next)) ||
+                        (nextRule != null && nextRule.HigherIndexNumbers.Contains(current)))
                     {
                         // Swap the numbers
                         numbers[i] = next;
@@ -124,11 +132,13 @@ public class Day5 : IDay
                 }
             } while (swapped && !IsLineValid(numbers)); // Repeat until valid or no swaps
 
-            /*             // Debugging Output
-                        Console.WriteLine("Input Line: " + line);
-                        Console.WriteLine("Sorted Line: " + string.Join(",", numbers));
-                        Console.WriteLine("Middle Value: " + numbers[numbers.Length / 2]); */
+            // Debugging Output
+            Console.WriteLine("Input Line: " + line);
+            Console.WriteLine("Sorted Line: " + string.Join(",", numbers));
+            Console.WriteLine("IsLineValid: " + IsLineValid(numbers));
+            Console.WriteLine("Middle Value: " + numbers[numbers.Length / 2]);
 
+            // Return middle value
             return numbers[numbers.Length / 2];
         }
 
