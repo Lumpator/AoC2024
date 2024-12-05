@@ -9,7 +9,7 @@ public class Day5 : IDay
     int i = 0;
     public Day5()
     {
-        _lines = File.ReadAllLines("Inputs/test.txt");
+        _lines = File.ReadAllLines("Inputs/inputDay5.txt");
         _rules = new List<Rule>();
         // Read the rules
         while (i < _lines.Length && !string.IsNullOrWhiteSpace(_lines[i]))
@@ -133,11 +133,11 @@ public class Day5 : IDay
             } while (swapped && !IsLineValid(numbers)); // Repeat until valid or no swaps
 
             // Debugging Output
-            Console.WriteLine("Input Line: " + line);
-            Console.WriteLine("Sorted Line: " + string.Join(",", numbers));
-            Console.WriteLine("IsLineValid: " + IsLineValid(numbers));
-            Console.WriteLine("Middle Value: " + numbers[numbers.Length / 2]);
-
+            /*             Console.WriteLine("Input Line: " + line);
+                        Console.WriteLine("Sorted Line: " + string.Join(",", numbers));
+                        Console.WriteLine("IsLineValid: " + IsLineValid(numbers));
+                        Console.WriteLine("Middle Value: " + numbers[numbers.Length / 2]);
+             */
             // Return middle value
             return numbers[numbers.Length / 2];
         }
