@@ -28,7 +28,6 @@ public class Day6 : IDay
     public void SolvePart1()
     {
         int part1Result = 0;
-        Console.WriteLine(_currentLocation);
 
         int MoveUntilLeavingGrid()
         {
@@ -41,37 +40,26 @@ public class Day6 : IDay
                 {
                     case "up":
                         _nextLocation = (_currentLocation.Item1 - 1, _currentLocation.Item2);
-                        if (!CheckIfNextLocationIsInGridBoundary(_nextLocation))
-                        {
-                            return steps;
-                        }
-                        Move(); // Go straight if possible or change your direction right
                         break;
                     case "down":
                         _nextLocation = (_currentLocation.Item1 + 1, _currentLocation.Item2);
-                        if (!CheckIfNextLocationIsInGridBoundary(_nextLocation))
-                        {
-                            return steps;
-                        }
-                        Move();
                         break;
                     case "left":
                         _nextLocation = (_currentLocation.Item1, _currentLocation.Item2 - 1);
-                        if (!CheckIfNextLocationIsInGridBoundary(_nextLocation))
-                        {
-                            return steps;
-                        }
-                        Move();
                         break;
                     case "right":
                         _nextLocation = (_currentLocation.Item1, _currentLocation.Item2 + 1);
-                        if (!CheckIfNextLocationIsInGridBoundary(_nextLocation))
-                        {
-                            return steps;
-                        }
-                        Move();
                         break;
                 }
+
+                if (!CheckIfNextLocationIsInGridBoundary(_nextLocation))
+                {
+                    return steps;
+                }
+
+                // Go straight if possible or change your direction right
+                Move();
+
                 if (_grid[_currentLocation.Item1][_currentLocation.Item2] != 'X')
                 {
                     steps++;
