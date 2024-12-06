@@ -20,9 +20,9 @@ public class Day6 : IDay
             _grid[i] = _lines[i].ToCharArray();
         }
 
-        _currentDirection = FindStartingDirectionAndLocation(_grid).Item1;
-        _currentLocation = FindStartingDirectionAndLocation(_grid).Item2;
-
+        var startingInfo = FindStartingDirectionAndLocation(_grid);
+        _currentDirection = startingInfo.Item1;
+        _currentLocation = startingInfo.Item2;
     }
 
     public void SolvePart1()
@@ -85,17 +85,7 @@ public class Day6 : IDay
         Console.WriteLine($"Part 1 solution is: {part1Result}");
     }
 
-    private void Move()
-    {
-        if (_grid[_nextLocation.Item1][_nextLocation.Item2] == '#')
-        {
-            TurnRight();
-        }
-        else
-        {
-            _currentLocation = _nextLocation;
-        }
-    }
+
 
     public void SolvePart2()
     {
@@ -103,7 +93,7 @@ public class Day6 : IDay
         Console.WriteLine($"Part 2 solution is: {part2Result} ");
     }
 
-    public (string, (int, int)) FindStartingDirectionAndLocation(char[][] grid)
+    private (string, (int, int)) FindStartingDirectionAndLocation(char[][] grid)
     {
         (int, int) currentLocation = (-1, -1);
         // Find the starting direction
@@ -136,7 +126,7 @@ public class Day6 : IDay
         return ("", currentLocation);
     }
 
-    public void TurnRight()
+    private void TurnRight()
     {
         switch (_currentDirection)
         {
@@ -155,7 +145,19 @@ public class Day6 : IDay
         }
     }
 
-    public bool CheckIfNextLocationIsInGridBoundary((int, int) nextLocation)
+    private void Move()
+    {
+        if (_grid[_nextLocation.Item1][_nextLocation.Item2] == '#')
+        {
+            TurnRight();
+        }
+        else
+        {
+            _currentLocation = _nextLocation;
+        }
+    }
+
+    private bool CheckIfNextLocationIsInGridBoundary((int, int) nextLocation)
     {
         return nextLocation.Item1 >= 0 && nextLocation.Item1 < _grid.Length && nextLocation.Item2 >= 0 && nextLocation.Item2 < _grid[0].Length;
     }
