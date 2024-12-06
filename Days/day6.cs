@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using AoC2024.Interfaces;
 
 namespace AoC2024.Days;
@@ -33,7 +32,7 @@ public class Day6 : IDay
 
         int MoveUntilLeavingGrid()
         {
-            int steps = 0;
+            int steps = 1;
 
             while (_currentLocation.Item1 >= 0 && _currentLocation.Item1 < _grid.Length && _currentLocation.Item2 >= 0 && _currentLocation.Item2 < _grid[0].Length)
             {
@@ -42,63 +41,35 @@ public class Day6 : IDay
                 {
                     case "up":
                         _nextLocation = (_currentLocation.Item1 - 1, _currentLocation.Item2);
-                        if (CheckIfNextLocationIsInGridBoundary(_nextLocation) == false)
+                        if (!CheckIfNextLocationIsInGridBoundary(_nextLocation))
                         {
                             return steps;
                         }
-                        if (_grid[_nextLocation.Item1][_nextLocation.Item2] == '#')
-                        {
-                            TurnRight();
-                        }
-                        else
-                        {
-                            _currentLocation = _nextLocation;
-                        }
+                        Move(); // Go straight if possible or change your direction right
                         break;
                     case "down":
                         _nextLocation = (_currentLocation.Item1 + 1, _currentLocation.Item2);
-                        if (CheckIfNextLocationIsInGridBoundary(_nextLocation) == false)
+                        if (!CheckIfNextLocationIsInGridBoundary(_nextLocation))
                         {
                             return steps;
                         }
-                        if (_grid[_nextLocation.Item1][_nextLocation.Item2] == '#')
-                        {
-                            TurnRight();
-                        }
-                        else
-                        {
-                            _currentLocation = _nextLocation;
-                        }
+                        Move();
                         break;
                     case "left":
                         _nextLocation = (_currentLocation.Item1, _currentLocation.Item2 - 1);
-                        if (CheckIfNextLocationIsInGridBoundary(_nextLocation) == false)
+                        if (!CheckIfNextLocationIsInGridBoundary(_nextLocation))
                         {
                             return steps;
                         }
-                        if (_grid[_nextLocation.Item1][_nextLocation.Item2] == '#')
-                        {
-                            TurnRight();
-                        }
-                        else
-                        {
-                            _currentLocation = _nextLocation;
-                        }
+                        Move();
                         break;
                     case "right":
                         _nextLocation = (_currentLocation.Item1, _currentLocation.Item2 + 1);
-                        if (CheckIfNextLocationIsInGridBoundary(_nextLocation) == false)
+                        if (!CheckIfNextLocationIsInGridBoundary(_nextLocation))
                         {
                             return steps;
                         }
-                        if (_grid[_nextLocation.Item1][_nextLocation.Item2] == '#')
-                        {
-                            TurnRight();
-                        }
-                        else
-                        {
-                            _currentLocation = _nextLocation;
-                        }
+                        Move();
                         break;
                 }
                 if (_grid[_currentLocation.Item1][_currentLocation.Item2] != 'X')
@@ -110,8 +81,20 @@ public class Day6 : IDay
             return steps;
         }
 
-        part1Result += MoveUntilLeavingGrid() + 1;
+        part1Result += MoveUntilLeavingGrid();
         Console.WriteLine($"Part 1 solution is: {part1Result}");
+    }
+
+    private void Move()
+    {
+        if (_grid[_nextLocation.Item1][_nextLocation.Item2] == '#')
+        {
+            TurnRight();
+        }
+        else
+        {
+            _currentLocation = _nextLocation;
+        }
     }
 
     public void SolvePart2()
@@ -155,21 +138,20 @@ public class Day6 : IDay
 
     public void TurnRight()
     {
-        if (_currentDirection == "up")
+        switch (_currentDirection)
         {
-            _currentDirection = "right";
-        }
-        else if (_currentDirection == "right")
-        {
-            _currentDirection = "down";
-        }
-        else if (_currentDirection == "down")
-        {
-            _currentDirection = "left";
-        }
-        else if (_currentDirection == "left")
-        {
-            _currentDirection = "up";
+            case "up":
+                _currentDirection = "right";
+                break;
+            case "right":
+                _currentDirection = "down";
+                break;
+            case "down":
+                _currentDirection = "left";
+                break;
+            case "left":
+                _currentDirection = "up";
+                break;
         }
     }
 
