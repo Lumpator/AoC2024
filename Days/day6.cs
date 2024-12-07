@@ -35,12 +35,12 @@ public class Day6 : IDay
         {
             int steps = 1;
 
-            while (CheckIfNextLocationIsInGridBoundary(currentLocation))
+            while (CheckIfLocationIsInGridBoundary(currentLocation))
             {
                 _grid[currentLocation.Item1][currentLocation.Item2] = 'X';
                 nextLocation = FindNextLocation(currentLocation, currentDirection, nextLocation);
 
-                if (!CheckIfNextLocationIsInGridBoundary(nextLocation))
+                if (!CheckIfLocationIsInGridBoundary(nextLocation))
                 {
                     return steps;
                 }
@@ -73,13 +73,13 @@ public class Day6 : IDay
             int paradoxCount = 0;
             var nextLocation = (0, 0);
 
-            while (CheckIfNextLocationIsInGridBoundary(currentLocation))
+            while (CheckIfLocationIsInGridBoundary(currentLocation))
             {
                 _alreadyVisitedLocations.Add((currentLocation, currentDirection));
 
                 nextLocation = FindNextLocation(currentLocation, currentDirection, nextLocation);
 
-                if (!CheckIfNextLocationIsInGridBoundary(nextLocation))
+                if (!CheckIfLocationIsInGridBoundary(nextLocation))
                 {
                     return paradoxCount;
                 }
@@ -122,11 +122,11 @@ public class Day6 : IDay
         var nextLocation = (0, 0);
         HashSet<((int, int), string)> visitedLocatinosWhenTryingToMakeParadox = new();
 
-        while (CheckIfNextLocationIsInGridBoundary(currentLocation))
+        while (CheckIfLocationIsInGridBoundary(currentLocation))
         {
             nextLocation = FindNextLocation(currentLocation, currentDirection, nextLocation);
 
-            if (!CheckIfNextLocationIsInGridBoundary(nextLocation))
+            if (!CheckIfLocationIsInGridBoundary(nextLocation))
             {
                 return false;
             }
@@ -232,7 +232,7 @@ public class Day6 : IDay
         return (currentDirection, currentLocation);
     }
 
-    private bool CheckIfNextLocationIsInGridBoundary((int, int) nextLocation)
+    private bool CheckIfLocationIsInGridBoundary((int, int) nextLocation)
     {
         return nextLocation.Item1 >= 0 && nextLocation.Item1 < _grid.Length && nextLocation.Item2 >= 0 && nextLocation.Item2 < _grid[0].Length;
     }
