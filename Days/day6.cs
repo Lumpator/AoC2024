@@ -74,7 +74,7 @@ public class Day6 : IDay
             return steps;
         }
 
-        // part1Result += MoveUntilLeavingGrid();
+        //part1Result += MoveUntilLeavingGrid();
         Console.WriteLine($"Part 1 solution is: {part1Result}");
     }
 
@@ -123,8 +123,14 @@ public class Day6 : IDay
                     _grid[nextLocation.Item1][nextLocation.Item2] = '#';
                     if (MoveUntilLeavingGridOrCreatingParadox(currentLocation, currentDirection))
                     {
-                        paradoxCount++;
-                        blockadeLocations.Add(nextLocation);
+
+                        bool exists = _alreadyVisitedLocations.Any(item => item.Item1 == nextLocation);
+                        if (!exists)
+                        {
+                            paradoxCount++;
+                            blockadeLocations.Add(nextLocation);
+                        }
+
                     }
                     _grid[nextLocation.Item1][nextLocation.Item2] = gridCopy;
                 }
@@ -140,7 +146,6 @@ public class Day6 : IDay
         part2Result += MoveUntilLeavingGrid(_currentLocation, _currentDirection);
         Console.WriteLine($"Part 2 solution is: {part2Result} ");
         Console.WriteLine($"Blockade locations: {blockadeLocations.Count}");
-
 
     }
 
@@ -178,6 +183,7 @@ public class Day6 : IDay
                     break;
             }
 
+
             if (!CheckIfNextLocationIsInGridBoundary(nextLocation))
             {
                 return false;
@@ -188,15 +194,14 @@ public class Day6 : IDay
                 return true;
             }
 
-
             visitedLocatinosWhenTryingToMakeParadox.Add((currentLocation, currentDirection));
-
 
 
             // Go straight if possible or change your direction right
             var moveResult = Move(currentDirection, currentLocation, nextLocation);
             currentDirection = moveResult.Item1;
             currentLocation = moveResult.Item2;
+
 
             switch (currentDirection)
             {
