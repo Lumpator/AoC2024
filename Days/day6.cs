@@ -45,9 +45,7 @@ public class Day6 : IDay
                     return steps;
                 }
                 // Go straight if possible or change your direction right
-                var moveresult = Move(currentDirection, currentLocation, nextLocation);
-                currentDirection = moveresult.Item1;
-                currentLocation = moveresult.Item2;
+                (currentDirection, currentLocation) = Move(currentDirection, currentLocation, nextLocation);
 
                 if (_grid[currentLocation.Item1][currentLocation.Item2] != 'X')
                 {
@@ -103,9 +101,7 @@ public class Day6 : IDay
                 }
 
                 // Go straight if possible or change your direction right
-                var moveResult = Move(currentDirection, currentLocation, nextLocation);
-                currentDirection = moveResult.Item1;
-                currentLocation = moveResult.Item2;
+                (currentDirection, currentLocation) = Move(currentDirection, currentLocation, nextLocation);
             }
             return paradoxCount;
         }
@@ -236,6 +232,5 @@ public class Day6 : IDay
     {
         return nextLocation.Item1 >= 0 && nextLocation.Item1 < _grid.Length && nextLocation.Item2 >= 0 && nextLocation.Item2 < _grid[0].Length;
     }
-
 
 }
