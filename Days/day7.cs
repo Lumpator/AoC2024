@@ -1,4 +1,3 @@
-using System.IO.Compression;
 using AoC2024.Interfaces;
 
 namespace AoC2024.Days;
