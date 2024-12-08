@@ -6,6 +6,8 @@ public class Day8 : IDay
 {
     private readonly string[] _lines;
     private readonly char[][] _grid;
+
+    private readonly List<(char, (int, int))> _antenas;
     public Day8()
     {
         _lines = File.ReadAllLines("Inputs/inputDay8.txt");
@@ -14,93 +16,49 @@ public class Day8 : IDay
         {
             _grid[i] = _lines[i].ToCharArray();
         }
-
-    }
-
-    public void SolvePart1()
-    {
-        int part1Result = 0;
-
-        List<(char, (int, int))> Antenas = new();
+        _antenas = new List<(char, (int, int))>();
         for (int row = 0; row < _grid.Length; row++)
         {
             for (int col = 0; col < _grid[row].Length; col++)
             {
                 if (_grid[row][col] != '.')
                 {
-                    Antenas.Add((_grid[row][col], (row, col)));
+                    _antenas.Add((_grid[row][col], (row, col)));
                 }
             }
         }
+    }
 
-        // Iterate over all unique antena pairs with same characcter and count their difference of x and y
+    public void SolvePart1()
+    {
+        int part1Result = 0;
         var processedPairs = new HashSet<(char, (int, int), (int, int))>();
         var signalLocations = new HashSet<(int, int)>();
-        foreach (var antena in Antenas)
+
+        // Iterate over all unique antena pairs with same characcter and count their difference of x and y
+        foreach (var antena in _antenas)
         {
-            var sameAntenas = Antenas.Where(x => x.Item1 == antena.Item1).ToList();
+            var sameAntenas = _antenas.Where(x => x.Item1 == antena.Item1).ToList();
+
             for (int i = 0; i < sameAntenas.Count; i++)
             {
                 for (int j = i + 1; j < sameAntenas.Count; j++)
                 {
-                    var pair = (sameAntenas[i].Item1, sameAntenas[i].Item2, sameAntenas[j].Item2);
-                    var reversePair = (sameAntenas[i].Item1, sameAntenas[j].Item2, sameAntenas[i].Item2);
-                    if (!processedPairs.Contains(pair) && !processedPairs.Contains(reversePair))
-                    {
-                        processedPairs.Add(pair);
-                        bool xLower = sameAntenas[i].Item2.Item1 < sameAntenas[j].Item2.Item1;
-                        bool yLower = sameAntenas[i].Item2.Item2 < sameAntenas[j].Item2.Item2;
+                    if (CheckIfPairIsAlreadyProcessed(processedPairs, sameAntenas[i], sameAntenas[j]))
+                        continue;
 
-                        var xDiff = Math.Abs(sameAntenas[i].Item2.Item1 - sameAntenas[j].Item2.Item1);
-                        var yDiff = Math.Abs(sameAntenas[i].Item2.Item2 - sameAntenas[j].Item2.Item2);
+                    processedPairs.Add((sameAntenas[i].Item1, sameAntenas[i].Item2, sameAntenas[j].Item2));
 
-                        var signalLocation1 = (-1, -1);
-                        var signalLocation2 = (-1, -1);
+                    var signalLocation1 = CalculateSignalLocation(sameAntenas[i].Item2, sameAntenas[j].Item2, true);
+                    var signalLocation2 = CalculateSignalLocation(sameAntenas[i].Item2, sameAntenas[j].Item2, false);
 
-                        if (xLower)
-                        {
-                            signalLocation1.Item1 = sameAntenas[i].Item2.Item1 - xDiff;
-                            signalLocation2.Item1 = sameAntenas[j].Item2.Item1 + xDiff;
-                        }
-                        else
-                        {
-                            signalLocation1.Item1 = sameAntenas[i].Item2.Item1 + xDiff;
-                            signalLocation2.Item1 = sameAntenas[j].Item2.Item1 - xDiff;
-                        }
-
-                        if (yLower)
-                        {
-                            signalLocation1.Item2 = sameAntenas[i].Item2.Item2 - yDiff;
-                            signalLocation2.Item2 = sameAntenas[j].Item2.Item2 + yDiff;
-                        }
-                        else
-                        {
-                            signalLocation1.Item2 = sameAntenas[i].Item2.Item2 + yDiff;
-                            signalLocation2.Item2 = sameAntenas[j].Item2.Item2 - yDiff;
-                        }
-
-
-
-                        if (CheckIfLocationIsInGridBoundary(signalLocation1))
-                        {
-                            signalLocations.Add(signalLocation1);
-                        }
-                        if (CheckIfLocationIsInGridBoundary(signalLocation2))
-                        {
-                            signalLocations.Add(signalLocation2);
-                        }
-
-                    }
+                    AddIfValid(signalLocations, signalLocation1);
+                    AddIfValid(signalLocations, signalLocation2);
                 }
             }
         }
 
-        /* // print grid
-        for (int i = 0; i < _grid.Length; i++)
-        {
-            Console.WriteLine(_grid[i]);
-        }
- */
+
         part1Result = signalLocations.Count;
         Console.WriteLine($"Part 1 solution is: {part1Result}");
     }
@@ -108,127 +66,70 @@ public class Day8 : IDay
     public void SolvePart2()
     {
         int part2Result = 0;
-
-        List<(char, (int, int))> Antenas = new();
-        for (int row = 0; row < _grid.Length; row++)
-        {
-            for (int col = 0; col < _grid[row].Length; col++)
-            {
-                if (_grid[row][col] != '.')
-                {
-                    Antenas.Add((_grid[row][col], (row, col)));
-                }
-            }
-        }
-
-        // Iterate over all unique antena pairs with same characcter and count their difference of x and y
         var processedPairs = new HashSet<(char, (int, int), (int, int))>();
         var signalLocations = new HashSet<(int, int)>();
-        foreach (var antena in Antenas)
+
+        // Iterate over all unique antena pairs with same characcter and count their difference of x and y
+        foreach (var antena in _antenas)
         {
-            var sameAntenas = Antenas.Where(x => x.Item1 == antena.Item1).ToList();
+            var sameAntenas = _antenas.Where(x => x.Item1 == antena.Item1).ToList();
+
             for (int i = 0; i < sameAntenas.Count; i++)
             {
                 for (int j = i + 1; j < sameAntenas.Count; j++)
                 {
-                    var pair = (sameAntenas[i].Item1, sameAntenas[i].Item2, sameAntenas[j].Item2);
-                    var reversePair = (sameAntenas[i].Item1, sameAntenas[j].Item2, sameAntenas[i].Item2);
-                    if (!processedPairs.Contains(pair) && !processedPairs.Contains(reversePair))
+                    if (CheckIfPairIsAlreadyProcessed(processedPairs, sameAntenas[i], sameAntenas[j]))
+                        continue;
+
+                    processedPairs.Add((sameAntenas[i].Item1, sameAntenas[i].Item2, sameAntenas[j].Item2));
+                    bool xLower = sameAntenas[i].Item2.Item1 < sameAntenas[j].Item2.Item1;
+                    bool yLower = sameAntenas[i].Item2.Item2 < sameAntenas[j].Item2.Item2;
+
+                    var xDiff = Math.Abs(sameAntenas[i].Item2.Item1 - sameAntenas[j].Item2.Item1);
+                    var yDiff = Math.Abs(sameAntenas[i].Item2.Item2 - sameAntenas[j].Item2.Item2);
+
+                    // creat firs signal location in position of antena (it doesnt matter which one)
+                    var signalLocation = sameAntenas[i].Item2;
+
+                    // Iterating in first direction to find all signals inside grid boundary
+                    while (true)
                     {
-                        processedPairs.Add(pair);
-                        bool xLower = sameAntenas[i].Item2.Item1 < sameAntenas[j].Item2.Item1;
-                        bool yLower = sameAntenas[i].Item2.Item2 < sameAntenas[j].Item2.Item2;
+                        var newSignalLocation = (
+                            signalLocation.Item1 + (xLower ? -xDiff : xDiff),
+                            signalLocation.Item2 + (yLower ? -yDiff : yDiff)
+                        );
 
-                        var xDiff = Math.Abs(sameAntenas[i].Item2.Item1 - sameAntenas[j].Item2.Item1);
-                        var yDiff = Math.Abs(sameAntenas[i].Item2.Item2 - sameAntenas[j].Item2.Item2);
-
-                        var signalLocation = sameAntenas[i].Item2;
-
-                        while (true)
+                        if (!CheckIfLocationIsInGridBoundary(newSignalLocation))
                         {
-                            var newSignalLocation = (-1, -1);
-
-                            if (xLower)
-                            {
-                                newSignalLocation.Item1 = signalLocation.Item1 - xDiff;
-                            }
-                            else
-                            {
-                                newSignalLocation.Item1 = signalLocation.Item1 + xDiff;
-                            }
-
-                            if (yLower)
-                            {
-                                newSignalLocation.Item2 = signalLocation.Item2 - yDiff;
-                            }
-                            else
-                            {
-                                newSignalLocation.Item2 = signalLocation.Item2 + yDiff;
-                            }
-
-                            if (!CheckIfLocationIsInGridBoundary(newSignalLocation))
-                            {
-                                break;
-                            }
-
-                            signalLocations.Add(newSignalLocation);
-                            signalLocation = newSignalLocation;
+                            break;
                         }
-
-                        signalLocation = sameAntenas[j].Item2;
-
-                        while (true)
-                        {
-                            var newSignalLocation = (-1, -1);
-
-                            if (xLower)
-                            {
-                                newSignalLocation.Item1 = signalLocation.Item1 + xDiff;
-                            }
-                            else
-                            {
-                                newSignalLocation.Item1 = signalLocation.Item1 - xDiff;
-                            }
-
-                            if (yLower)
-                            {
-                                newSignalLocation.Item2 = signalLocation.Item2 + yDiff;
-                            }
-                            else
-                            {
-                                newSignalLocation.Item2 = signalLocation.Item2 - yDiff;
-                            }
-
-                            if (!CheckIfLocationIsInGridBoundary(newSignalLocation))
-                            {
-                                break;
-                            }
-
-                            signalLocations.Add(newSignalLocation);
-                            signalLocation = newSignalLocation;
-                        }
-
-
-                        // add location of both antenas into signallocations
-                        signalLocations.Add(sameAntenas[i].Item2);
-                        signalLocations.Add(sameAntenas[j].Item2);
-
+                        signalLocations.Add(newSignalLocation);
+                        signalLocation = newSignalLocation;
                     }
+
+                    // Iterating in second direction to find all signals inside grid boundary
+                    while (true)
+                    {
+                        var newSignalLocation = (
+                            signalLocation.Item1 + (xLower ? xDiff : -xDiff),
+                            signalLocation.Item2 + (yLower ? yDiff : -yDiff)
+                        );
+
+                        if (!CheckIfLocationIsInGridBoundary(newSignalLocation))
+                        {
+                            break;
+                        }
+                        signalLocations.Add(newSignalLocation);
+                        signalLocation = newSignalLocation;
+                    }
+
+                    // add location of both antenas into HashSet
+                    signalLocations.Add(sameAntenas[i].Item2);
+                    signalLocations.Add(sameAntenas[j].Item2);
+
                 }
             }
         }
-        /*         // add # in grid for each signallocation
-                foreach (var signalLocation in signalLocations)
-                {
-                    _grid[signalLocation.Item1][signalLocation.Item2] = '#';
-                }
-
-
-                // print grid
-                for (int i = 0; i < _grid.Length; i++)
-                {
-                    Console.WriteLine(_grid[i]);
-                } */
 
         part2Result = signalLocations.Count;
         Console.WriteLine($"Part 2 solution is: {part2Result} ");
@@ -239,5 +140,36 @@ public class Day8 : IDay
         return nextLocation.Item1 >= 0 && nextLocation.Item1 < _grid.Length && nextLocation.Item2 >= 0 && nextLocation.Item2 < _grid[0].Length;
     }
 
+    void AddIfValid(HashSet<(int, int)> locations, (int, int) location)
+    {
+        if (CheckIfLocationIsInGridBoundary(location))
+        {
+            locations.Add(location);
+        }
+    }
+    private bool CheckIfPairIsAlreadyProcessed(HashSet<(char, (int, int), (int, int))> processedPairs, (char, (int, int)) antena1, (char, (int, int)) antena2)
+    {
+        var pair = (antena1.Item1, antena1.Item2, antena2.Item2);
+        var reversePair = (antena1.Item1, antena2.Item2, antena1.Item2);
+        return processedPairs.Contains(pair) || processedPairs.Contains(reversePair);
+    }
 
+    private (int, int) CalculateSignalLocation((int, int) antena1, (int, int) antena2, bool firstLocation)
+    {
+        int xDiff = Math.Abs(antena1.Item1 - antena2.Item1);
+        int yDiff = Math.Abs(antena1.Item2 - antena2.Item2);
+
+        bool xLower = antena1.Item1 < antena2.Item1;
+        bool yLower = antena1.Item2 < antena2.Item2;
+
+        int x = firstLocation ?
+                (xLower ? antena1.Item1 - xDiff : antena1.Item1 + xDiff) :
+                (xLower ? antena2.Item1 + xDiff : antena2.Item1 - xDiff);
+
+        int y = firstLocation ?
+                (yLower ? antena1.Item2 - yDiff : antena1.Item2 + yDiff) :
+                (yLower ? antena2.Item2 + yDiff : antena2.Item2 - yDiff);
+
+        return (x, y);
+    }
 }
