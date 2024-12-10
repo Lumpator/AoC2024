@@ -5,7 +5,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        var day = new Day9();
+        var day = new Day10();
 
         // Measure Part 1 execution time
         var stopwatch = Stopwatch.StartNew();

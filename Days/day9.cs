@@ -8,7 +8,7 @@ public class Day9 : IDay
     private readonly string[] _lines;
     public Day9()
     {
-        _lines = File.ReadAllLines("Inputs/test.txt");
+        _lines = File.ReadAllLines("Inputs/inputDay9.txt");
 
     }
 
@@ -70,14 +70,79 @@ public class Day9 : IDay
         }
 
         Console.WriteLine($"Part 1 solution is: {part1Result}");
+
     }
 
     public void SolvePart2()
     {
         long part2Result = 0;
 
+        int blockId = 0;
+        int i = 0;
+        List<(int id, int length)> blocks = new List<(int id, int length)>();
+        List<int> gaps = new List<int>();
+        foreach (var line in _lines)
+        {
+            foreach (var character in line)
+            {
+                int length = int.Parse(character.ToString());
+                if (i % 2 == 0)
+                {
+                    blocks.Add((blockId, length));
+                    blockId++;
+                }
+                else
+                {
+                    gaps.Add(length);
+                }
+                i++;
+            }
+        }
 
-        Console.WriteLine($"Part 2 solution is: {part2Result} ");
+        var movedBlocks = new bool[blocks.Count];
+        var currentPosition = 0;
+
+        for (var index = 0; index < blocks.Count; ++index)
+        {
+            if (movedBlocks[blocks[index].id])
+            {
+                currentPosition += blocks[index].length;
+            }
+            else
+            {
+                for (var blockItemIndex = 0; blockItemIndex < blocks[index].length; ++blockItemIndex)
+                {
+                    part2Result += currentPosition * blocks[index].id;
+                    currentPosition++;
+                }
+            }
+
+            if (index < gaps.Count)
+            {
+                var gapRemainingSpace = gaps[index];
+                while (gapRemainingSpace > 0)
+                {
+                    var blockToMove = blocks.LastOrDefault(t => t.id > index && !movedBlocks[t.id] && t.length <= gapRemainingSpace);
+                    if (blockToMove.Equals(default((int id, int length))))
+                    {
+                        currentPosition += gapRemainingSpace;
+                        gapRemainingSpace = 0;
+                    }
+                    else
+                    {
+                        movedBlocks[blockToMove.id] = true;
+                        gapRemainingSpace -= blockToMove.length;
+                        for (var blockItemIndex = 0; blockItemIndex < blockToMove.length; ++blockItemIndex)
+                        {
+                            part2Result += currentPosition * blockToMove.id;
+                            currentPosition++;
+                        }
+                    }
+                }
+            }
+        }
+
+        Console.WriteLine($"Part 2 solution is: {part2Result}");
     }
 
 
