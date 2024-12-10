@@ -7,7 +7,8 @@ public class Day : IDay
     private readonly string[] _lines;
     public Day()
     {
-        _lines = File.ReadAllLines("Inputs/test.txt");
+        string filePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Inputs", "test.txt");
+        _lines = File.ReadAllLines(filePath);
     }
 
     public void SolvePart1()

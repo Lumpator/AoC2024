@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C#: AoC2024",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\AoC2024.csproj",
+            "launchConfigurationId": "TargetFramework=;AoC2024"
+        }
+    ]
+}

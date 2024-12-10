@@ -11,7 +11,8 @@ public class Day10 : IDay
 
     public Day10()
     {
-        _lines = File.ReadAllLines("Inputs/inputDay10.txt");
+        string filePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Inputs", "inputDay10.txt");
+        _lines = File.ReadAllLines(filePath);
         _grid = new char[_lines.Length][];
         for (int i = 0; i < _lines.Length; i++)
         {
