@@ -1,4 +1,5 @@
 using AoC2024.Interfaces;
+using static AoC2024.Utils.Utilities;
 
 namespace AoC2024.Days;
 
@@ -35,38 +36,14 @@ public class Day12 : IDay
                 }
             }
         }
-
-
     }
-
     public void SolvePart1()
     {
         int part1Result = 0;
 
-
-
         foreach (var region in _regions)
         {
-            //Console.WriteLine($"Area size: {region.Count}");
-            //Console.WriteLine($"Perimeter: {CalculateRegionPerimeter(region)}");
             part1Result += region.Count * CalculateRegionPerimeter(region);
-        }
-
-        int CalculateRegionPerimeter(List<(int, int)> region)
-        {
-            int perimeter = 0;
-            foreach (var location in region)
-            {
-                foreach (Direction direction in Enum.GetValues(typeof(Direction)))
-                {
-                    var nextLocation = FindNextLocation(location, direction);
-                    if (!region.Contains(nextLocation))
-                    {
-                        perimeter++;
-                    }
-                }
-            }
-            return perimeter;
         }
 
         Console.WriteLine($"Part 1 solution is: {part1Result}");
@@ -79,122 +56,91 @@ public class Day12 : IDay
         int CalculateNumberOfRegionSides(List<(int, int)> region)
         {
             var sideCount = 0;
-
+            // side count is same as count of edges in my shape
             foreach (var location in region)
             {
-                //calculate number of horizontal and vertical neighbours of location
-                int horizontalNeighbours = 0;
-                int verticalNeighbours = 0;
-                foreach (Direction direction in Enum.GetValues(typeof(Direction)))
-                {
-                    var nextLocation = FindNextLocation(location, direction);
-                    if (region.Contains(nextLocation))
-                    {
-                        if (direction == Direction.Left || direction == Direction.Right)
-                        {
-                            horizontalNeighbours++;
-                        }
-                        else
-                        {
-                            verticalNeighbours++;
-                        }
-                    }
-                }
-                if (horizontalNeighbours == 0 && verticalNeighbours == 0)
-                {
-                    sideCount += 4;
-                }
-                if (horizontalNeighbours == 1)
-                {
-                    if (verticalNeighbours == 1)
-                    {
-                        sideCount += 1;
-                    }
-                    if (verticalNeighbours == 0)
-                    {
-                        sideCount += 2;
-                    }
-
-                }
-                if (verticalNeighbours == 1)
-                {
-                    if (horizontalNeighbours == 0)
-                    {
-                        sideCount += 2;
-                    }
-                }
-
-                if (region.Contains((location.Item1 - 1, location.Item2)) && region.Contains((location.Item1, location.Item2 + 1)))
-                {
-                    if (!region.Contains((location.Item1 - 1, location.Item2 + 1)))
-                    {
-                        sideCount++;
-                    }
-                }
-
-                // Check RIGHT and BOTTOM neighbors
-                if (region.Contains((location.Item1, location.Item2 + 1)) && region.Contains((location.Item1 + 1, location.Item2)))
-                {
-                    if (!region.Contains((location.Item1 + 1, location.Item2 + 1)))
-                    {
-                        sideCount++;
-                    }
-                }
-
-                // Check BOTTOM and LEFT neighbors
-                if (region.Contains((location.Item1 + 1, location.Item2)) && region.Contains((location.Item1, location.Item2 - 1)))
-                {
-                    if (!region.Contains((location.Item1 + 1, location.Item2 - 1)))
-                    {
-                        sideCount++;
-                    }
-                }
-
-                // Check LEFT and TOP neighbors
-                if (region.Contains((location.Item1, location.Item2 - 1)) && region.Contains((location.Item1 - 1, location.Item2)))
-                {
-                    if (!region.Contains((location.Item1 - 1, location.Item2 - 1)))
-                    {
-                        sideCount++;
-                    }
-                }
+                sideCount += FindOuterEdges(region, location);
+                sideCount += FindInnerEdges(region, location);
             }
             return sideCount;
         }
 
-
-
-
         foreach (var region in _regions)
         {
-            Console.WriteLine($"Area size: {region.Count}");
-            Console.WriteLine($"Sides: {CalculateNumberOfRegionSides(region)}");
             part2Result += region.Count * CalculateNumberOfRegionSides(region);
-
         }
         Console.WriteLine($"Part 2 solution is: {part2Result} ");
     }
-
-    private (int, int) FindNextLocation((int, int) currentLocation, Direction direction) => direction switch
+    int CalculateRegionPerimeter(List<(int, int)> region)
     {
-        Direction.Up => (currentLocation.Item1 - 1, currentLocation.Item2),
-        Direction.Down => (currentLocation.Item1 + 1, currentLocation.Item2),
-        Direction.Left => (currentLocation.Item1, currentLocation.Item2 - 1),
-        Direction.Right => (currentLocation.Item1, currentLocation.Item2 + 1),
-        _ => throw new ArgumentOutOfRangeException()
-    };
-
-    private bool CheckIfLocationIsInGridBoundary((int, int) nextLocation)
+        int perimeter = 0;
+        foreach (var location in region)
+        {
+            foreach (Direction direction in Enum.GetValues(typeof(Direction)))
+            {
+                var nextLocation = FindNextLocation(location, direction);
+                if (!region.Contains(nextLocation))
+                {
+                    perimeter++;
+                }
+            }
+        }
+        return perimeter;
+    }
+    private int FindOuterEdges(List<(int, int)> region, (int, int) location)
     {
-        return nextLocation.Item1 >= 0 && nextLocation.Item1 < _grid.Length && nextLocation.Item2 >= 0 && nextLocation.Item2 < _grid[0].Length;
+        int horizontalNeighbours = 0;
+        int verticalNeighbours = 0;
+        int innerEdgesCount = 0;
+        foreach (Direction direction in Enum.GetValues(typeof(Direction)))
+        {
+            var nextLocation = FindNextLocation(location, direction);
+
+            if (region.Contains(nextLocation))
+            {
+                if (direction == Direction.Left || direction == Direction.Right)
+                {
+                    horizontalNeighbours++;
+                }
+                else
+                {
+                    verticalNeighbours++;
+                }
+            }
+        }
+
+        innerEdgesCount += (horizontalNeighbours, verticalNeighbours) switch
+        {
+            (0, 0) => 4,
+            (1, 1) => 1,
+            (1, 0) => 2,
+            (0, 1) => 2,
+            _ => 0
+        };
+        return innerEdgesCount;
     }
 
-    private enum Direction
+    private int FindInnerEdges(List<(int, int)> region, (int, int) location)
     {
-        Up,
-        Down,
-        Left,
-        Right
+        int innerEdgesCount = 0;
+        var diagonalChecks = new (Direction, Direction, (int, int))[]
+                        {
+                    (Direction.Up, Direction.Right, (location.Item1 - 1, location.Item2 + 1)),
+                    (Direction.Right, Direction.Down, (location.Item1 + 1, location.Item2 + 1)),
+                    (Direction.Down, Direction.Left, (location.Item1 + 1, location.Item2 - 1)),
+                    (Direction.Left, Direction.Up, (location.Item1 - 1, location.Item2 - 1))
+                        };
+
+        foreach (var (direction1, direction2, diagonal) in diagonalChecks)
+        {
+            var nextLocation1 = FindNextLocation(location, direction1);
+            var nextLocation2 = FindNextLocation(location, direction2);
+            if (region.Contains(nextLocation1) && region.Contains(nextLocation2) && !region.Contains(diagonal))
+            {
+                innerEdgesCount++;
+            }
+        }
+        return innerEdgesCount;
     }
 
     private void CheckNeighbours(int row, int col, List<(int, int)> temp, char regionChar)
@@ -203,13 +149,12 @@ public class Day12 : IDay
         foreach (Direction direction in Enum.GetValues(typeof(Direction)))
         {
             var nextLocation = FindNextLocation((row, col), direction);
-            if (CheckIfLocationIsInGridBoundary(nextLocation) && _grid[nextLocation.Item1][nextLocation.Item2] == regionChar && !temp.Contains(nextLocation))
+            if (CheckIfLocationIsInGridBoundary(nextLocation, _grid) && _grid[nextLocation.Item1][nextLocation.Item2] == regionChar && !temp.Contains(nextLocation))
             {
                 temp.Add(nextLocation);
                 CheckNeighbours(nextLocation.Item1, nextLocation.Item2, temp, regionChar);
             }
         }
     }
-
 
 }

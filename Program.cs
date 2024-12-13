@@ -5,18 +5,25 @@ class Program
 {
     static void Main(string[] args)
     {
-        var day = new Day13();
+        var stopwatch = Stopwatch.StartNew();
+        var day = new Day12();
+        stopwatch.Stop();
+        Console.WriteLine("----------------------------------------");
+        Console.WriteLine($"Preparations elapsed time: {stopwatch.Elapsed.TotalMilliseconds:F5} ms");
+        Console.WriteLine("----------------------------------------");
 
         // Measure Part 1 execution time
-        var stopwatch = Stopwatch.StartNew();
+        stopwatch.Restart();
         day.SolvePart1();
         stopwatch.Stop();
-        Console.WriteLine($"Execution time: {stopwatch.ElapsedMilliseconds} ms");
+        Console.WriteLine($"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds:F5} ms");
+        Console.WriteLine("----------------------------------------");
 
         // Measure Part 2 execution time
         stopwatch.Restart();
         day.SolvePart2();
         stopwatch.Stop();
-        Console.WriteLine($"Execution time: {stopwatch.ElapsedMilliseconds} ms");
+        Console.WriteLine($"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds:F5} ms");
+        Console.WriteLine("----------------------------------------");
     }
 }
