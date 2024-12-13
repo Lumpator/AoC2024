@@ -9,7 +9,7 @@ public class Day12 : IDay
     private readonly List<List<(int, int)>> _regions = new List<List<(int, int)>>();
     public Day12()
     {
-        string filePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Inputs", "test.txt");
+        string filePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Inputs", "inputDay12.txt");
         _lines = File.ReadAllLines(filePath);
         _grid = new char[_lines.Length][];
         for (int i = 0; i < _lines.Length; i++)
@@ -75,21 +75,89 @@ public class Day12 : IDay
     public void SolvePart2()
     {
         int part2Result = 0;
+
         int CalculateNumberOfRegionSides(List<(int, int)> region)
         {
             var sideCount = 0;
+
             foreach (var location in region)
             {
-                HashSet<(int, int)> sides = new HashSet<(int, int)>();
+                //calculate number of horizontal and vertical neighbours of location
+                int horizontalNeighbours = 0;
+                int verticalNeighbours = 0;
                 foreach (Direction direction in Enum.GetValues(typeof(Direction)))
                 {
                     var nextLocation = FindNextLocation(location, direction);
-                    if (!region.Contains(nextLocation))
+                    if (region.Contains(nextLocation))
                     {
-                        sides.Add(nextLocation);
+                        if (direction == Direction.Left || direction == Direction.Right)
+                        {
+                            horizontalNeighbours++;
+                        }
+                        else
+                        {
+                            verticalNeighbours++;
+                        }
                     }
                 }
-                sideCount += sides.Count();
+                if (horizontalNeighbours == 0 && verticalNeighbours == 0)
+                {
+                    sideCount += 4;
+                }
+                if (horizontalNeighbours == 1)
+                {
+                    if (verticalNeighbours == 1)
+                    {
+                        sideCount += 1;
+                    }
+                    if (verticalNeighbours == 0)
+                    {
+                        sideCount += 2;
+                    }
+
+                }
+                if (verticalNeighbours == 1)
+                {
+                    if (horizontalNeighbours == 0)
+                    {
+                        sideCount += 2;
+                    }
+                }
+
+                if (region.Contains((location.Item1 - 1, location.Item2)) && region.Contains((location.Item1, location.Item2 + 1)))
+                {
+                    if (!region.Contains((location.Item1 - 1, location.Item2 + 1)))
+                    {
+                        sideCount++;
+                    }
+                }
+
+                // Check RIGHT and BOTTOM neighbors
+                if (region.Contains((location.Item1, location.Item2 + 1)) && region.Contains((location.Item1 + 1, location.Item2)))
+                {
+                    if (!region.Contains((location.Item1 + 1, location.Item2 + 1)))
+                    {
+                        sideCount++;
+                    }
+                }
+
+                // Check BOTTOM and LEFT neighbors
+                if (region.Contains((location.Item1 + 1, location.Item2)) && region.Contains((location.Item1, location.Item2 - 1)))
+                {
+                    if (!region.Contains((location.Item1 + 1, location.Item2 - 1)))
+                    {
+                        sideCount++;
+                    }
+                }
+
+                // Check LEFT and TOP neighbors
+                if (region.Contains((location.Item1, location.Item2 - 1)) && region.Contains((location.Item1 - 1, location.Item2)))
+                {
+                    if (!region.Contains((location.Item1 - 1, location.Item2 - 1)))
+                    {
+                        sideCount++;
+                    }
+                }
             }
             return sideCount;
         }
@@ -97,14 +165,11 @@ public class Day12 : IDay
 
 
 
-
         foreach (var region in _regions)
         {
-            //Console.WriteLine($"Area size: {region.Count}");
-            //Console.WriteLine($"Sides: {CalculateNumberOfRegionSides(region)}");
-            var regionSides = CalculateNumberOfRegionSides(region);
-            Console.WriteLine($"Region sides: {regionSides}");
-            part2Result += region.Count * regionSides;
+            Console.WriteLine($"Area size: {region.Count}");
+            Console.WriteLine($"Sides: {CalculateNumberOfRegionSides(region)}");
+            part2Result += region.Count * CalculateNumberOfRegionSides(region);
 
         }
         Console.WriteLine($"Part 2 solution is: {part2Result} ");
