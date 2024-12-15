@@ -36,4 +36,15 @@ public static class Utilities
     {
         return nextLocation.Item1 >= 0 && nextLocation.Item1 < grid.Length && nextLocation.Item2 >= 0 && nextLocation.Item2 < grid[0].Length;
     }
+    public static void PrintGrid(char[][] grid)
+    {
+        for (int i = 0; i < grid.Length; i++)
+        {
+            for (int j = 0; j < grid[i].Length; j++)
+            {
+                Console.Write(grid[i][j]);
+            }
+            Console.WriteLine();
+        }
+    }
 }
