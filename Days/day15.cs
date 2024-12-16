@@ -48,7 +48,7 @@ public class Day15 : IDay
             grid[i] = new char[_grid[i].Length];
             Array.Copy(_grid[i], grid[i], _grid[i].Length);
         }
-        (int, int) currentLocation = FindStartingLocation(grid);
+        (int, int) currentLocation = FindLocation(grid, '@');
         grid[currentLocation.Item1][currentLocation.Item2] = '.';
 
         foreach (char instruction in _instructions)
@@ -118,7 +118,7 @@ public class Day15 : IDay
         }
 
 
-        (int, int) currentLocation = FindStartingLocation(newGrid);
+        (int, int) currentLocation = FindLocation(newGrid, '@');
         newGrid[currentLocation.Item1][currentLocation.Item2] = '@';
         newGrid[currentLocation.Item1][currentLocation.Item2 + 1] = '.';
 
@@ -156,21 +156,7 @@ public class Day15 : IDay
         Console.WriteLine($"Part 2 solution is: {part2Result} ");
     }
 
-    private (int, int) FindStartingLocation(char[][] grid)
-    {
-        for (int i = 0; i < grid.Length; i++)
-        {
-            for (int j = 0; j < grid[i].Length; j++)
-            {
-                if (grid[i][j] == '@')
-                {
-                    return (i, j);
-                }
 
-            }
-        }
-        return (-1, -1);
-    }
 
     private (int, int) FindNextLocation((int, int) currentLocation, char direction)
     {

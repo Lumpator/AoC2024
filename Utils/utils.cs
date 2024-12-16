@@ -47,4 +47,20 @@ public static class Utilities
             Console.WriteLine();
         }
     }
+
+    public static (int, int) FindLocation(char[][] grid, char symbol)
+    {
+        for (int i = 0; i < grid.Length; i++)
+        {
+            for (int j = 0; j < grid[i].Length; j++)
+            {
+                if (grid[i][j] == symbol)
+                {
+                    return (i, j);
+                }
+
+            }
+        }
+        return (-1, -1);
+    }
 }
