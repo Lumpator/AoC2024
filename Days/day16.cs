@@ -1,7 +1,7 @@
 using AoC2024.Interfaces;
 using static AoC2024.Utils.Utilities;
 
-// 595 => too high 
+// 596 => too high 
 namespace AoC2024.Days;
 
 public class Day16 : IDay
@@ -10,7 +10,7 @@ public class Day16 : IDay
     private readonly char[][] _grid;
     public Day16()
     {
-        string filePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Inputs", "inputDay16.txt");
+        string filePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Inputs", "test.txt");
         _lines = File.ReadAllLines(filePath);
         _grid = new char[_lines.Length][];
         for (int i = 0; i < _lines.Length; i++)
@@ -25,8 +25,8 @@ public class Day16 : IDay
         var start = FindLocation(_grid, 'S');
         var end = FindLocation(_grid, 'E');
 
-        List<((int, int), long, int, int)> calculatedLocations = new(){
-            (start, 0, 0, 0)
+        List<((int, int), long, int, int, Direction)> calculatedLocations = new(){
+            (start, 0, 0, 0, Direction.Right)
         };
         List<((int, int), long, Direction, int, int)> pathsToVisit = new()
         {
@@ -71,14 +71,14 @@ public class Day16 : IDay
                     {
                         if (calculatedLocations[index].Item2 > score + scoreToAdd)
                         {
-                            calculatedLocations[index] = (calculatedLocations[index].Item1, score + scoreToAdd, stepsCount + 1, turnCount + turnToAdd);
+                            calculatedLocations[index] = (calculatedLocations[index].Item1, score + scoreToAdd, stepsCount + 1, turnCount + turnToAdd, direction);
                             pathsToVisit.Add((nextLocation, score + scoreToAdd, direction, stepsCount + 1, turnCount + turnToAdd));
                         }
                     }
                 }
                 else
                 {
-                    calculatedLocations.Add((nextLocation, score + scoreToAdd, stepsCount + 1, turnCount + turnToAdd));
+                    calculatedLocations.Add((nextLocation, score + scoreToAdd, stepsCount + 1, turnCount + turnToAdd, direction));
                     pathsToVisit.Add((nextLocation, score + scoreToAdd, direction, stepsCount + 1, turnCount + turnToAdd));
                 }
             }
@@ -92,7 +92,7 @@ public class Day16 : IDay
 
         //check all neighbours of end location and retrive one with the lowest score
         HashSet<(int, int)> pathCount = new();
-        List<((int, int), long, int, int)> locationsToVisit = new()
+        List<((int, int), long, int, int, Direction)> locationsToVisit = new()
         {
             endLocation
         };
@@ -111,7 +111,7 @@ public class Day16 : IDay
                 var tempLocation = calculatedLocations.Find(x => x.Item1 == nextLocation);
                 if (tempLocation.Item3 == currentLocation.Item3 - 1)
                 {
-                    /*                  Console.Write(currentLocation.Item2);
+                    /*               Console.Write(currentLocation.Item2);
                                      Console.Write(" | ");
                                      Console.Write(currentLocation.Item2 - tempLocation.Item2);
                                      Console.Write(" | ");
@@ -121,7 +121,7 @@ public class Day16 : IDay
                         locationsToVisit.Add(tempLocation);
                         pathCount.Add(tempLocation.Item1);
                     }
-                    if (tempLocation.Item4 - currentLocation.Item4 == 1 && tempLocation.Item2 - currentLocation.Item2 == 999 && tempLocation.Item4 < totalTurns)
+                    if (tempLocation.Item4 - currentLocation.Item4 == 1 && tempLocation.Item2 - currentLocation.Item2 == 999 && tempLocation.Item4 <= totalTurns)
                     {
                         locationsToVisit.Add(tempLocation);
                         pathCount.Add(tempLocation.Item1);
@@ -134,6 +134,7 @@ public class Day16 : IDay
                 }
             }
         }
+
 
 
         Console.WriteLine($"Path: {pathCount.Count + 1}");

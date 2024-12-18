@@ -6,7 +6,7 @@ class Program
     static void Main(string[] args)
     {
         var stopwatch = Stopwatch.StartNew();
-        var day = new Day16();
+        var day = new Day17();
         stopwatch.Stop();
         Console.WriteLine("----------------------------------------");
         Console.WriteLine($"Preparations elapsed time: {stopwatch.Elapsed.TotalMilliseconds:F5} ms");
