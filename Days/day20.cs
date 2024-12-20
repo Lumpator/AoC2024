@@ -41,11 +41,7 @@ public class Day20 : IDay
     public void SolvePart2()
     {
         int part2Result = 0;
-
         var cheats2 = FindAllCheats(_grid, _calculatedLocations, _calculatedLocations.Find(x => x.Item1 == _end).Item2, 20);
-        cheats2 = cheats2
-            .Where(x => x.Key >= 50 && x.Key <= _calculatedLocations.Find(x => x.Item1 == _end).Item2)
-            .ToDictionary(x => x.Key, x => x.Value);
 
         part2Result = cheats2.Where(x => x.Key >= 100).Select(x => x.Value).Sum();
         Console.WriteLine($"Part 2 solution is: {part2Result} ");
@@ -64,36 +60,34 @@ public class Day20 : IDay
 
         while (pathsToVisit.Count > 0)
         {
-            long picoseconds;
+            long picoSeconds;
             (int, int) currentLocation;
-            (currentLocation, picoseconds) = pathsToVisit[0];
-
+            (currentLocation, picoSeconds) = pathsToVisit[0];
             pathsToVisit.RemoveAt(0);
+
             foreach (Direction direction in Enum.GetValues(typeof(Direction)))
             {
                 var nextLocation = FindNextLocation(currentLocation, direction);
-
                 if (_grid[nextLocation.Item1][nextLocation.Item2] == '#')
                 {
                     continue;
                 }
-
                 if (calculatedLocations.Any(x => x.Item1 == nextLocation))
                 {
                     var index = calculatedLocations.FindIndex(x => x.Item1 == nextLocation);
                     if (index != -1)
                     {
-                        if (calculatedLocations[index].Item2 > picoseconds + 1)
+                        if (calculatedLocations[index].Item2 > picoSeconds + 1)
                         {
-                            calculatedLocations[index] = (calculatedLocations[index].Item1, picoseconds + 1);
-                            pathsToVisit.Add((nextLocation, picoseconds + 1));
+                            calculatedLocations[index] = (calculatedLocations[index].Item1, picoSeconds + 1);
+                            pathsToVisit.Add((nextLocation, picoSeconds + 1));
                         }
                     }
                 }
                 else
                 {
-                    calculatedLocations.Add((nextLocation, picoseconds + 1));
-                    pathsToVisit.Add((nextLocation, picoseconds + 1));
+                    calculatedLocations.Add((nextLocation, picoSeconds + 1));
+                    pathsToVisit.Add((nextLocation, picoSeconds + 1));
                 }
             }
         }
@@ -134,13 +128,7 @@ public class Day20 : IDay
 
             foreach (var possibleCheat in possibleCheats)
             {
-                var cheatLocation = possibleCheat.Item1;
-                var original = calculatedLocations.Find(x => x.Item1 == cheatLocation);
-                var originalLocation = original.Item1;
-                long distance = Math.Abs(currentLocation.Item1 - cheatLocation.Item1) + Math.Abs(currentLocation.Item2 - cheatLocation.Item2);
-                long cheatTime = original.Item2 - currentTime - distance;
-
-                AddToCheatsDict(ref cheats, cheatTime);
+                AddToCheatsDict(ref cheats, possibleCheat.Item2 - currentTime - (Math.Abs(currentLocation.Item1 - possibleCheat.Item1.Item1) + Math.Abs(currentLocation.Item2 - possibleCheat.Item1.Item2)));
             }
         }
         return cheats;
