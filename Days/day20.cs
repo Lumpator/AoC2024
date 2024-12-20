@@ -30,7 +30,7 @@ public class Day20 : IDay
     {
         int part1Result = 0;
 
-        var cheats = FindAllCheats(_grid, _calculatedLocations, _calculatedLocations.Find(x => x.Item1 == _end).Item2, 2);
+        var cheats = FindAllCheats(_calculatedLocations, 2);
         part1Result = cheats.Where(x => x.Key >= 100).Select(x => x.Value).Sum();
 
 
@@ -41,7 +41,7 @@ public class Day20 : IDay
     public void SolvePart2()
     {
         int part2Result = 0;
-        var cheats2 = FindAllCheats(_grid, _calculatedLocations, _calculatedLocations.Find(x => x.Item1 == _end).Item2, 20);
+        var cheats2 = FindAllCheats(_calculatedLocations, 20);
 
         part2Result = cheats2.Where(x => x.Key >= 100).Select(x => x.Value).Sum();
         Console.WriteLine($"Part 2 solution is: {part2Result} ");
@@ -106,17 +106,16 @@ public class Day20 : IDay
         }
     }
 
-    private Dictionary<long, int> FindAllCheats(char[][] grid, List<((int, int), long)> calculatedLocations, long endTimeWithoutCheat, int cheatDuration)
+    private Dictionary<long, int> FindAllCheats(List<((int, int), long)> calculatedLocations, int cheatDuration)
     {
         Dictionary<long, int> cheats = new();
-        var racePath = calculatedLocations.Where(x => x.Item2 <= endTimeWithoutCheat).ToList();
-
-        foreach (var location in racePath)
+        var endTimeWithoutCheat = calculatedLocations.Find(x => x.Item1 == _end).Item2;
+        foreach (var location in calculatedLocations)
         {
             var currentLocation = location.Item1;
             var currentTime = location.Item2;
 
-            var possibleCheats = racePath
+            var possibleCheats = calculatedLocations
                 .Where(x => x.Item2 > currentTime && x.Item2 <= endTimeWithoutCheat)
                 .Where(possibleCheat =>
                 {
