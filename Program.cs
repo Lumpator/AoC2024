@@ -6,7 +6,7 @@ class Program
     static void Main(string[] args)
     {
         var stopwatch = Stopwatch.StartNew();
-        var day = new Day22();
+        var day = new Day23();
         stopwatch.Stop();
         if (stopwatch.Elapsed.TotalSeconds > 1)
         {
