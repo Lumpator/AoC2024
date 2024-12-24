@@ -2,10 +2,10 @@ using AoC2024.Interfaces;
 
 namespace AoC2024.Days;
 
-public class Day : IDay
+public class Day25 : IDay
 {
     private readonly string[] _lines;
-    public Day()
+    public Day25()
     {
         string filePath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Inputs", "test.txt");
         _lines = File.ReadAllLines(filePath);
